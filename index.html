@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VideoHarness-SRSI</title>
+  <meta name="description" content="VideoHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness. An evidence-governed framework for evolving agentic video-understanding harnesses that generalize.">
+  <meta property="og:title" content="VideoHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness">
+  <meta property="og:description" content="Every search decision should rest on evidence that is transferable, sufficient, and gathered before the search commits.">
+  <meta property="og:image" content="static/images/srsi_overview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f1a2e'/%3E%3Cpath d='M6 23 L11 19 L15 20 L19 13 L23 12 L26 7' stroke='%237fb2ff' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css?v=20261014">
+</head>
+<body>
+
+<!-- ============================== NAV ============================== -->
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">VideoHarness-<span>SRSI</span></a>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#evolution">Evolution</a></li>
+      <li><a href="#diagnosis">Diagnosis</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#srsi-evolution">SRSI in Action</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#ablations">Ablations</a></li>
+      <li><a href="#strategies">Strategies</a></li>
+      <li><a href="#examples">Examples</a></li>
+      <li><a href="#bibtex">BibTeX</a></li>
+    </ul>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle color theme" title="Toggle theme">◐</button>
+  </div>
+</nav>
+
+<!-- ============================== HERO ============================== -->
+<header class="hero" id="top">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="venue"><i></i> Recursive self-improvement · Agentic video understanding</div>
+    <h1><span class="accent">VideoHarness-SRSI</span></h1>
+    <p class="subtitle">Structured Recursive Self-Improvement for Video Understanding Harness</p>
+
+    <div class="authors">
+      <span class="a">Zihao Lin<sup>1,5,*</sup></span>,
+      <span class="a">Haoyu Dong<sup>2</sup></span>,
+      <span class="a">Haobo Xu<sup>3</sup></span>,
+      <span class="a">Chi-Chih Chang<sup>4</sup></span>,
+      <span class="a">Xuying Ning<sup>3</sup></span>,
+      <span class="a">Yinglong Xia<sup>5</sup></span>,
+      <span class="a">Shuang Yang<sup>5</sup></span>,
+      <span class="a">Zhuokai Zhao<sup>5</sup></span>,
+      <span class="a">Xinying Song<sup>5</sup></span>,
+      <span class="a">Dongfang Liu<sup>6</sup></span>,
+      <span class="a">Lifu Huang<sup>1</sup></span>,
+      <span class="a">Yang Song<sup>5</sup></span>,
+      <span class="a">Qifan Wang<sup>5</sup></span>
+    </div>
+    <div class="affils">
+      <span><sup>1</sup>UC Davis</span><span><sup>2</sup>Duke University</span><span><sup>3</sup>UIUC</span>
+      <span><sup>4</sup>Cornell University</span><span><sup>5</sup>Meta</span><span><sup>6</sup>Purdue University</span>
+      <span class="note"><sup>*</sup>Work done at Meta</span>
+    </div>
+
+    <div class="links">
+      <a class="btn" href="#" aria-disabled="true" title="Coming soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+        Paper <span class="soon">soon</span></a>
+      <a class="btn ghost" href="#" aria-disabled="true" title="Coming soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg>
+        arXiv <span class="soon">soon</span></a>
+      <a class="btn ghost" href="#" aria-disabled="true" title="Coming soon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+        Code <span class="soon">soon</span></a>
+      <a class="btn ghost" href="#bibtex">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/></svg>
+        BibTeX</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b data-count="4000" data-suffix="+">0</b><span>evolved harnesses analyzed</span></div>
+      <div class="stat"><b data-count="6.2" data-prefix="+" data-suffix="%" data-dec="1">0</b><span>mean held-out score vs. BRSI (relative)</span></div>
+      <div class="stat"><b data-count="37.9" data-prefix="−" data-suffix="%" data-dec="1">0</b><span>mean validation–test gap</span></div>
+      <div class="stat"><b data-count="4">0</b><span>video benchmarks<br>(QA &amp; temporal grounding)</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================== OVERVIEW ============================== -->
+<section class="block" id="overview">
+  <div class="wrap">
+    <div class="eyebrow">Overview</div>
+    <h2>Evolving a harness is easy. Evolving one that <em>generalizes</em> is not.</h2>
+    <div class="tldr reveal">
+      <div>
+        <p class="big">An LLM system is shaped not only by its model, but by its <b>harness</b>: the executable code that decides what the model sees, which tools run, and how intermediate outputs become an answer.</p>
+        <p>Recursive self-improvement lets a coding agent rewrite that harness from feedback. We study it in <b>agentic video understanding</b>, where harnesses must coordinate frame selection, retrieval, perception tools, reflection, memory and multi-agent roles — and where rich videos invite a proposer to specialize to what it sees.</p>
+        <p>We first build <span class="brsi">VideoHarness-BRSI</span>, a baseline recursive self-improvement loop around a frozen VLM. It rivals hand-engineered systems, but across 4,000+ evolved candidates its validation wins often fail to transfer. All of its failures trace to one root: <b>the same imperfect validation verdict decides both which harness is kept and where the proposer searches next.</b></p>
+        <p>We therefore propose <span class="srsi">VideoHarness-SRSI</span>, an evidence-governed framework in which every search decision rests on evidence that is <b>transferable</b>, <b>sufficient</b>, and <b>gathered before search commits</b>.</p>
+      </div>
+      <ul class="pill-list">
+        <li data-n="01" style="--c: var(--orange)"><b>Diagnosis</b><span>Recursive evolution discovers competitive harnesses, yet suffers three interconnected failure modes: validation overfitting, search-budget dilution, and the early-experience trap.</span></li>
+        <li data-n="02" style="--c: var(--blue)"><b>Framework</b><span>SRSI combines content-free proposer feedback, an instrumented warm-up, isolated probe–race branches, and factorial composition before joint refinement.</span></li>
+        <li data-n="03" style="--c: var(--green)"><b>Evaluation</b><span>On Video-MME, LongVideoBench, OVO-Bench and MomentSeeker, SRSI raises the mean held-out score by 6.2% and cuts the validation–test gap by 37.9% over BRSI.</span></li>
+      </ul>
+    </div>
+
+    <figure class="figure reveal" style="margin-top: 40px">
+      <img src="static/images/brsi_overview.png" alt="Overview of VideoHarness-BRSI" loading="lazy">
+      <figcaption><b>VideoHarness-BRSI.</b> (a) A coding proposer inspects validation videos and questions, revises the harness around a frozen VLM, and archives scores and traces that later iterations reuse. (b) In a retrieval-only run on Video-MME, the evolved harness matches the strongest hand-designed AKS variant with 38.7% fewer frames. The same validation verdict both selects the harness and steers the next search — mixing the true gain with validation fit, noise, and champion inflation.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================== BRSI EVOLUTION ============================== -->
+<section class="block" id="evolution">
+  <div class="wrap">
+    <div class="eyebrow">Finding 1 · Recursive evolution works</div>
+    <h2>Watch a retrieval strategy evolve — 50 iterations, 138 candidates</h2>
+    <p class="lede">Starting from a simple <code>clip_topk</code> seed on Video-MME, <span class="brsi">BRSI</span> improves validation accuracy in several distinct steps rather than a single lucky jump, from 66.2% to 74.7%. The strategy names are chosen autonomously by the proposer. Press play, or drag the slider; hover a dot to see what the proposer built.</p>
+
+    <div class="card viz reveal" id="evoCard">
+      <div class="viz-head">
+        <div class="viz-title">Best-so-far validation accuracy · Video-MME (450 questions)
+          <small>Line: running champion · Band: range of candidates proposed in that iteration · Stars: Pareto-frontier milestones</small></div>
+        <div class="controls">
+          <button class="ctl primary" id="evoPlay">▶ Play</button>
+          <button class="ctl" id="evoReset">↺ Reset</button>
+          <button class="ctl" id="evoSpeed" title="Playback speed">1×</button>
+        </div>
+      </div>
+      <div class="evo-grid">
+        <div>
+          <svg class="chart" id="evoChart" viewBox="0 0 760 380" role="img" aria-label="Animated best-so-far validation accuracy over 50 iterations"></svg>
+          <div class="scrub"><span>iter</span><input type="range" id="evoSlider" min="0" max="50" value="0"><span id="evoIter">0 / 50</span></div>
+        </div>
+        <aside class="champion" id="evoChamp">
+          <div class="label">Current champion</div>
+          <div class="name" id="champName">clip_topk</div>
+          <div class="acc"><span id="champAcc">66.2</span><small> % val</small></div>
+          <div class="delta" id="champDelta">seed harness</div>
+          <div class="chips" id="champChips"><span class="chip">clip-retrieval</span><span class="chip">top-k</span></div>
+          <div class="label" style="margin-top:8px">Evolution log</div>
+          <ul class="log" id="evoLog"></ul>
+        </aside>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top: 20px">
+      <div class="card viz reveal">
+        <div class="viz-head"><div class="viz-title">Held-out accuracy vs. frames per question
+          <small>2,250 Video-MME questions never seen during evolution</small></div></div>
+        <svg class="chart" id="aksChart" viewBox="0 0 520 330" role="img" aria-label="Held-out accuracy versus frames"></svg>
+      </div>
+      <div class="card viz reveal" style="display:flex; flex-direction:column; justify-content:center">
+        <div class="takeaway" style="margin-top: 14px">
+          <p><b>Recursive evolution discovers video harnesses that rival expert designs.</b> From a simple retrieval seed, BRSI raises validation accuracy by <b>8.5 points</b> and deploys <code>medium_augspread</code>, which matches the strongest hand-designed AKS variant on held-out data (<b>68.4%</b>) with <b>38.7% fewer frames</b> (38 vs. 62).</p>
+        </div>
+        <div class="milestones" style="margin-top: 30px" id="milestones"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DIAGNOSIS ============================== -->
+<section class="block" id="diagnosis">
+  <div class="wrap">
+    <div class="eyebrow">Findings 2–4 · Where it breaks</div>
+    <h2>One noisy signal, three failure modes</h2>
+    <p class="lede">The loop learns from a single signal, the <b>validation verdict</b> δ̂ = V(H) − V(H<sup>inc</sup>): how much a candidate beats the current champion on validation. Only one of its four terms carries over to unseen questions. Hover a red term to see which failure mode inflates it.</p>
+
+    <div class="equation reveal" id="equation">
+      <button class="eq-term" data-def="verdict"><span class="sym">δ̂</span><span class="nm">verdict</span></button>
+      <div class="eq-op">=</div>
+      <button class="eq-term good" data-def="gain"><span class="sym">Δ</span><span class="nm">true gain</span></button>
+      <div class="eq-op">+</div>
+      <button class="eq-term" data-def="fit" data-mode="overfit"><span class="sym">S</span><span class="nm">validation fit</span></button>
+      <div class="eq-op">−</div>
+      <button class="eq-term" data-def="inflation" data-mode="trap"><span class="sym">ω</span><span class="nm">champion inflation</span></button>
+      <div class="eq-op">+</div>
+      <button class="eq-term" data-def="noise" data-mode="dilution trap"><span class="sym">ε</span><span class="nm">noise</span></button>
+    </div>
+
+    <div class="eq-defs reveal" id="eqDefs">
+      <div class="eq-defs-head"><span>Definition</span><span class="hint">click a term above to switch · red terms also open their failure mode</span></div>
+      <div class="eq-def" data-def="verdict">
+        <div class="eq-def-sym"><span class="sym">δ̂</span><span class="nm">verdict</span></div>
+        <div class="eq-def-body">
+          <p><b>δ̂ = V(H) − V(H<sup>inc</sup>)</b>, the difference between a candidate&rsquo;s validation accuracy and the current champion&rsquo;s. This is the <em>only</em> number the loop ever sees: it decides both which harness is kept and where the proposer searches next.</p>
+          <p class="eq-def-note">Each validation score itself splits as V(H) = μ(H) + S(H) + e(H): accuracy on new questions, a fit that helps only on the validation questions, and chance noise on this particular validation set. Only Δ below carries over to held-out data; S, ω and ε are errors that make the verdict misstate it.</p>
+        </div>
+      </div>
+      <div class="eq-def good" data-def="gain">
+        <div class="eq-def-sym"><span class="sym">Δ</span><span class="nm">true gain</span></div>
+        <div class="eq-def-body">
+          <p><b>Δ = μ(H) − μ(H<sup>inc</sup>)</b>: how much more accurate the candidate is than the champion on <em>unseen</em> questions. This is what we actually want to improve.</p>
+          <p class="eq-def-note"><span class="tag ok">transfers to held-out</span> The only term that carries over. Evolution works exactly as far as δ̂ tracks Δ; it goes wrong whenever one of the three error terms outweighs Δ.</p>
+        </div>
+      </div>
+      <div class="eq-def active" data-def="fit">
+        <div class="eq-def-sym"><span class="sym">S</span><span class="nm">validation fit</span></div>
+        <div class="eq-def-body">
+          <p><b>S = S(H) − S(H<sup>inc</sup>)</b>: accuracy gained only on the validation questions, because the proposer saw them while writing the harness. It is zero for harnesses written without seeing the questions.</p>
+          <p class="eq-def-note"><span class="tag bad">error</span> Inflated by <b>Finding 2 · validation overfitting</b>: the more the proposer sees (question text, options, frames), the larger S grows.</p>
+        </div>
+      </div>
+      <div class="eq-def" data-def="inflation">
+        <div class="eq-def-sym"><span class="sym">ω</span><span class="nm">champion inflation</span></div>
+        <div class="eq-def-body">
+          <p><b>ω = 𝔼[e(H<sup>inc</sup>)] &gt; 0</b>: the champion&rsquo;s expected noise. The champion is not a random harness but the one with the highest validation score so far, so its luck is positive on average (the optimizer&rsquo;s curse). Every new candidate is measured against this inflated score, so its verdict is shifted <em>down</em> by ω.</p>
+          <p class="eq-def-note"><span class="tag bad">error</span> Decides irreversibly in <b>Finding 4 · early-experience trap</b>: every new direction starts about 1 point behind.</p>
+        </div>
+      </div>
+      <div class="eq-def" data-def="noise">
+        <div class="eq-def-sym"><span class="sym">ε</span><span class="nm">noise</span></div>
+        <div class="eq-def-body">
+          <p><b>ε = e(H) − e(H<sup>inc</sup>) + ω</b>: the zero-mean remainder of the noise difference once the inflation is separated out. Its standard deviation σ grows with the number of validation answers the candidate changes relative to the champion.</p>
+          <p class="eq-def-note"><span class="tag bad">error</span> Inflated by <b>Finding 3 · search-budget dilution</b> (coupled edits flip more answers, fewer evaluations per decision) and dominates early verdicts in <b>Finding 4 · early-experience trap</b>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modes-tabs" role="tablist">
+      <button class="mode-tab active" data-target="overfit" role="tab">
+        <span class="k">Finding 2 · inflates S</span><span class="t">Validation overfitting</span>
+        <span class="s">Richer feedback lets harnesses fit the validation questions.</span></button>
+      <button class="mode-tab" data-target="dilution" role="tab">
+        <span class="k">Finding 3 · inflates ε</span><span class="t">Search-budget dilution</span>
+        <span class="s">Large, coupled spaces leave too little evidence per decision.</span></button>
+      <button class="mode-tab" data-target="trap" role="tab">
+        <span class="k">Finding 4 · ε &amp; ω decide</span><span class="t">Early-experience trap</span>
+        <span class="s">One noisy early verdict closes a direction for good.</span></button>
+    </div>
+
+    <div class="mode-panel active" id="mode-overfit">
+      <div class="figure"><img src="static/images/overfitting_result.png" alt="Validation minus held-out gap by feedback arm" loading="lazy"><figcaption><b>What happens.</b> Validation − held-out gap of harnesses evolved under three feedback arms on LongVideoBench.</figcaption></div>
+      <div class="figure"><img src="static/images/overfitting_theory.png" alt="Shares of validation spread" loading="lazy"><figcaption><b>Why.</b> Shares of validation-score spread due to true gain (ρ<sub>Δ</sub>), validation fit (ρ<sub>S</sub>), and noise (ρ<sub>ε</sub>).</figcaption></div>
+      <div class="mode-text">
+        <div>
+          <p>Keeping the loop fixed, we vary only what the proposer sees: <b>Blindfolded</b> (per-question correctness + behavioral counters), <b>Trace</b> (+ question text, options, interaction traces), and <b>Multimodal</b> (+ video frames — the full access of BRSI).</p>
+          <p>The more the proposer sees, the larger the gap. Crucially, the lost transfer goes entirely into <em>fit</em>, not noise: proposers that see question text even quote validation questions in their code comments.</p>
+          <div class="takeaway"><p><b>Hide the validation instances from the proposer.</b> It should see <em>how</em> a harness behaves, not <em>what</em> it is evaluated on.</p></div>
+        </div>
+        <div class="bignum">
+          <div><b>2.0 → 3.2</b><span>val–test gap (pts), Blindfolded → Multimodal</span></div>
+          <div><b>54% → 30%</b><span>true-gain share ρ<sub>Δ</sub></span></div>
+          <div><b>31% → 56%</b><span>validation-fit share ρ<sub>S</sub></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mode-panel" id="mode-dilution">
+      <div class="figure"><img src="static/images/dilution_result.png" alt="Best validation gain: retrieval only vs full harness" loading="lazy"><figcaption><b>What happens.</b> Best validation gain over seeds on Video-MME: retrieval only (1 family) vs. full harness (6 families), matched budget of 87 candidates.</figcaption></div>
+      <div class="figure"><img src="static/images/dilution_theory.png" alt="Evaluations per combination vs verdict noise" loading="lazy"><figcaption><b>Why.</b> Each run placed by evaluations per mechanism combination <i>r</i> and verdict noise σ; contours mark equal power to detect a 1-point gain.</figcaption></div>
+      <div class="mode-text">
+        <div>
+          <p>A larger search space could in principle reach higher accuracy — but it spreads a fixed budget over more mechanism combinations (<b>breadth</b> lowers <i>r</i>), and coupled mechanisms make each edit flip more answers (<b>coupling</b> raises σ).</p>
+          <p>Even edits touching a single family flip 47.6 validation answers in the full harness, vs. 19.8 with retrieval alone. The full-harness search misses more than four in five real 1-point improvements.</p>
+          <div class="takeaway"><p><b>Develop mechanisms separately before combining them.</b> Concentrate evaluations on one mechanism at a time, with local edits, before optimizing interactions.</p></div>
+        </div>
+        <div class="bignum">
+          <div><b>6.4 vs 5.1</b><span>validation gain (pts): 1 family vs 6 families</span></div>
+          <div><b>3.5 → 1.7</b><span>evaluations per combination <i>r</i></span></div>
+          <div><b>&lt; 0.2</b><span>statistical power of the full-harness search</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mode-panel" id="mode-trap">
+      <div class="figure"><img src="static/images/trap_result.png" alt="Champion frame count across retrieval runs" loading="lazy"><figcaption><b>What happens.</b> Champion frame count of retrieval runs on Video-MME. A frame-raising probe wins by +10 questions in one run (18 frames) and loses by −10 in another (32 frames).</figcaption></div>
+      <div class="figure"><img src="static/images/trap_theory.png" alt="Continuation probability vs held-out win rate" loading="lazy"><figcaption><b>Why.</b> The loop continues a candidate as a step function of its verdict (black), while its true held-out win rate rises gradually (blue).</figcaption></div>
+      <div class="mode-text">
+        <div>
+          <p>After losing one early probe, a run writes into its memory that the frame count is <code>"MINED OUT"</code> — and its champion never exceeds 16 frames. Runs that expand the budget reach 67.6% held-out; those that stay reach 64.9%.</p>
+          <p>Only 8% of early-verdict variation reflects true differences, and champion inflation starts every new direction ~1 point behind. Yet the loop continues 77% of winners and only 8% of the rest; 37% of dropped candidates actually beat the champion on held-out data.</p>
+          <div class="takeaway"><p><b>Do not let one noisy verdict close a direction.</b> Early evidence should come from controlled comparisons collected regardless of earlier outcomes.</p></div>
+        </div>
+        <div class="bignum">
+          <div><b>6 / 12</b><span>runs never expand the frame budget</span></div>
+          <div><b>64.9 vs 67.6</b><span>held-out %, stayed vs. expanded</span></div>
+          <div><b>37%</b><span>of abandoned candidates were better</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="root-cause reveal">
+      <div><span class="from">content-level feedback</span><span class="arrow">→</span><span class="to">transferable evidence</span>
+        <p>The proposer sees only scores and content-free traces.</p></div>
+      <div><span class="from">joint, coupled search</span><span class="arrow">→</span><span class="to">sufficient evidence</span>
+        <p>Mechanisms develop in isolated branches, then compose.</p></div>
+      <div><span class="from">outcome-driven exploration</span><span class="arrow">→</span><span class="to">evidence before commitment</span>
+        <p>An instrumented warm-up measures every mechanism first.</p></div>
+    </div>
+    <p class="muted" style="font-size:14px; margin-top:12px">Simple remedies do not help: changing parent selection (greedy, clade-UCB, random) moves deployed held-out accuracy by at most 0.5 points, and starting from a stronger AKS seed lands within the range of simple seeds — every verdict still compares one candidate to a selected champion on the same questions.</p>
+  </div>
+</section>
+
+<!-- ============================== METHOD ============================== -->
+<section class="block" id="method">
+  <div class="wrap">
+    <div class="eyebrow">Method</div>
+    <h2>VideoHarness-SRSI: evidence before search commits</h2>
+    <p class="lede">SRSI keeps the propose–evaluate–accumulate loop of BRSI and changes only the <em>evidence</em> behind its decisions. Each component implements one takeaway.</p>
+
+    <figure class="figure reveal">
+      <img src="static/images/srsi_overview.png" alt="Overview of VideoHarness-SRSI" loading="lazy">
+      <figcaption><b>Overview of VideoHarness-SRSI.</b> Top: under information isolation the harness runs on validation videos and questions, but the proposer receives only scores and content-free traces. Bottom: Stage I adds a removal and an intensity change to free proposals each round and selects a seed pool and backbone H<sub>0</sub>; Stage II evolves each mechanism axis in its own branch from H<sub>0</sub> under a probe–race budget; Stage III distills kept axes into fixed modifications, evaluates all combinations, and jointly refines them into H<sup>★</sup>.</figcaption>
+    </figure>
+
+    <div class="stepper reveal">
+      <div class="steps" role="tablist">
+        <button class="step active" data-step="0" style="--c: var(--blue)"><span class="k">Principle</span><span class="t">Information isolation</span></button>
+        <button class="step" data-step="1" style="--c: var(--purple)"><span class="k">Stage I</span><span class="t">Instrumented warm-up</span></button>
+        <button class="step" data-step="2" style="--c: var(--gold)"><span class="k">Stage II</span><span class="t">Isolated branch evolution</span></button>
+        <button class="step" data-step="3" style="--c: var(--green)"><span class="k">Stage III</span><span class="t">Factorial composition &amp; refinement</span></button>
+      </div>
+      <div>
+        <div class="step-body active" data-step="0" style="--c: var(--blue)">
+          <div class="fixes">fixes → <b>validation overfitting (S)</b></div>
+          <h3>The proposer sees how a harness behaves, never what it is tested on</h3>
+          <p>A harness can fit the validation questions only through what the proposer learns about them, so SRSI closes this channel at its source. The harness still executes on the validation videos, but the proposer receives only aggregate accuracy and a <b>content-free trace</b>: per-question correctness under an opaque ID, plus behavioral counters. A deny list on all proposer tools enforces it.</p>
+          <div class="iso-diagram">
+            <div class="iso-box deny"><h4>Never visible to proposer</h4><ul><li>video frames</li><li>question text</li><li>answer options</li><li>gold answers</li></ul></div>
+            <div class="iso-shield">⛨</div>
+            <div class="iso-box allow"><h4>Content-free feedback</h4><ul><li>validation accuracy</li><li>correct / wrong per opaque ID</li><li>VLM &amp; tool calls, frames</li><li>retrieval &amp; memory operations</li></ul></div>
+          </div>
+<div class="trace"><span class="c"># content-free trace format</span>
+{"qid": "q_7f3a", "correct": <span class="g">true</span>,  "vlm_calls": 3, "frames": 112, "tool_calls": 18, "families": ["retrieval","multi-role"]}
+{"qid": "q_91c0", "correct": <span class="r">false</span>, "vlm_calls": 2, "frames": 64,  "tool_calls": 7,  "families": ["retrieval"]}</div>
+        </div>
+
+        <div class="step-body" data-step="1" style="--c: var(--purple)">
+          <div class="fixes">fixes → <b>early-experience trap (ε, ω)</b></div>
+          <h3>Controlled experiments, collected regardless of earlier verdicts</h3>
+          <p>Each warm-up round contains three <b>free proposals</b>, one <b>removal</b> that deletes one of seven mechanism families, and one <b>intensity</b> change that roughly doubles or halves how much one family is used (e.g. a larger retrieval budget, a detector run on 3 frames instead of 12, or two reflection passes instead of one). Evidence on each mechanism accumulates over many comparisons instead of resting on its first verdict; under-tested mechanisms are flagged as <em>under-explored</em>, not discarded.</p>
+          <p>When accuracy plateaus, the six best harnesses form a seed pool and the best becomes the shared backbone <b>H<sub>0</sub></b>. Each run gathers 11.7 removal and 13.0 intensity contrasts across the families, collected regardless of earlier verdicts, so an early noisy loss can no longer close a direction.</p>
+          <div class="card viz" style="box-shadow:none">
+            <div class="viz-head"><div class="viz-title">Warm-up round composition<small>5 candidates per round · the structured slots keep every direction measured</small></div></div>
+            <svg class="chart" id="warmViz" viewBox="0 0 640 170"></svg>
+          </div>
+        </div>
+
+        <div class="step-body" data-step="2" style="--c: var(--gold)">
+          <div class="fixes">fixes → <b>search-budget dilution (ε)</b></div>
+          <h3>Probe every axis, race the promising half</h3>
+          <p>The harness is split into six fixed axes — retrieval, frame budget, read schedule, multi-role, pixels &amp; detectors, derived state — plus a free-form axis. Each evolves from H<sub>0</sub> in its own branch under a template that keeps edits local. Every axis is <b>probed</b> with 3 candidates; the top half <b>race</b> on to 15; at most 3 proceed. Since all branches share H<sub>0</sub>, champion inflation shifts them alike.</p>
+          <div class="card viz" style="box-shadow:none">
+            <div class="viz-head">
+              <div class="viz-title">Probe–race on branches<small>Validation accuracy of each branch candidate vs. the backbone H<sub>0</sub> (dashed)</small></div>
+              <div class="controls"><div class="seed-switch" data-target="race"><button class="on" data-seed="1">seed 1</button><button data-seed="2">seed 2</button><button data-seed="3">seed 3</button></div>
+                <button class="ctl" id="raceReplay">↺</button></div>
+            </div>
+            <svg class="chart" id="raceViz" viewBox="0 0 640 330"></svg>
+          </div>
+        </div>
+
+        <div class="step-body" data-step="3" style="--c: var(--green)">
+          <div class="fixes">measures → <b>transfer &amp; interactions</b></div>
+          <h3>Gains found apart need not add up — so test every combination</h3>
+          <p>Each kept axis is distilled into a fixed, portable modification. All 2<sup>3</sup> combinations are evaluated against H<sub>0</sub>: seven evaluations, yet each modification's effect is averaged over four comparisons, and the same comparisons measure interactions. <b>Joint refinement</b> then co-optimizes the few mechanisms whose effects are already measured, yielding H<sup>★</sup>.</p>
+          <div class="card viz" style="box-shadow:none">
+            <div class="viz-head">
+              <div class="viz-title">Composition lattice<small>Validation accuracy of every factorial cell; color = difference from H<sub>0</sub></small></div>
+              <div class="controls"><div class="seed-switch" data-target="lattice"><button class="on" data-seed="1">seed 1</button><button data-seed="2">seed 2</button><button data-seed="3">seed 3</button></div></div>
+            </div>
+            <svg class="chart" id="latticeViz" viewBox="0 0 640 360"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SRSI EVOLUTION ============================== -->
+<section class="block" id="srsi-evolution">
+  <div class="wrap">
+    <div class="eyebrow">SRSI in action</div>
+    <h2>SRSI vs. BRSI on every benchmark</h2>
+    <p class="lede">Table 1 reports the harness each run deploys. Executor: frozen Qwen3-VL-8B-Instruct; proposer: Claude Opus 5; three seeds per benchmark, and each run deploys its validation-best harness, scored on held-out test data (mIoU on MomentSeeker, accuracy elsewhere). SRSI is best on both validation and held-out test on all four benchmarks, and its lead over BRSI widens from validation to test on three of them.</p>
+
+    <div class="card reveal" style="padding: 10px 14px">
+      <div class="table-wrap">
+        <table class="res">
+          <thead>
+            <tr><th rowspan="2">Method</th><th colspan="2">Video-MME</th><th colspan="2">LongVideoBench</th><th colspan="2">OVO-Bench</th><th colspan="2">MomentSeeker</th></tr>
+            <tr><th>Val</th><th>Test</th><th>Val</th><th>Test</th><th>Val</th><th>Test</th><th>Val</th><th>Test</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="9">Fixed hand-written baselines</td></tr>
+            <tr><td class="m">uniform</td><td>60.44</td><td class="test">61.64</td><td>58.97</td><td class="test">59.15</td><td>52.76</td><td class="test">52.20</td><td>11.94</td><td class="test">11.43</td></tr>
+            <tr><td class="m">clip_topk</td><td>66.21</td><td class="test">63.40</td><td>62.33</td><td class="test">62.07</td><td>51.94</td><td class="test">53.32</td><td>16.58</td><td class="test">17.98</td></tr>
+            <tr><td class="m">tool_survey</td><td>65.78</td><td class="test">62.27</td><td>59.42</td><td class="test">60.49</td><td>50.51</td><td class="test">51.28</td><td>16.72</td><td class="test">17.66</td></tr>
+            <tr><td class="m">reflect_loop</td><td>60.44</td><td class="test">60.04</td><td>62.11</td><td class="test">60.61</td><td>51.33</td><td class="test">55.36</td><td>16.23</td><td class="test">17.66</td></tr>
+            <tr><td class="m">debate_pair</td><td>63.78</td><td class="test">61.42</td><td>57.40</td><td class="test">55.56</td><td>44.58</td><td class="test">45.86</td><td>16.42</td><td class="test">17.92</td></tr>
+            <tr><td class="m">memo_multiturn</td><td>63.11</td><td class="test">58.98</td><td>58.52</td><td class="test">59.93</td><td>55.42</td><td class="test">54.65</td><td>15.91</td><td class="test">16.00</td></tr>
+            <tr class="group"><td colspan="9">Evolved harnesses</td></tr>
+            <tr><td>VideoHarness-BRSI</td><td>72.2<span class="pm">±1.8</span></td><td class="test">66.5<span class="pm">±1.2</span></td><td>70.2<span class="pm">±0.3</span></td><td class="test">66.6<span class="pm">±1.0</span></td><td>72.9<span class="pm">±2.1</span></td><td class="test">67.2<span class="pm">±1.7</span></td><td>23.8<span class="pm">±0.7</span></td><td class="test">19.0<span class="pm">±1.8</span></td></tr>
+            <tr class="ours"><td>VideoHarness-SRSI</td><td class="best">75.0<span class="pm">±1.9</span></td><td class="test best">70.1<span class="pm">±1.0</span></td><td class="best">71.1<span class="pm">±2.0</span></td><td class="test best">67.3<span class="pm">±1.0</span></td><td class="best">73.8<span class="pm">±2.4</span></td><td class="test best">72.5<span class="pm">±3.1</span></td><td class="best">25.3<span class="pm">±0.3</span></td><td class="test best">23.0<span class="pm">±0.7</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:12.5px; margin:8px 0 0"><b>Table 1.</b> Validation and held-out test scores. Baselines are single runs; evolved harnesses are mean ± sd over three seeds. Test columns are shaded.</p>
+    </div>
+
+    <div class="reveal" style="margin-top: 26px">
+      <h3>Did SRSI fix the failure modes?</h3>
+      <p class="muted" style="margin-top:0">Re-measuring the Section 3 diagnostics on the runs of Table 1.</p>
+      <div class="metric-row two">
+        <div class="card metric"><div class="k">Transfer coefficient β</div><div class="v"><span class="from">0.30</span><span class="arr">→</span><span class="to">0.52</span></div><p>Share of a validation lead that reappears on held-out data (BRSI full harness → SRSI).</p></div>
+        <div class="card metric"><div class="k">Power to detect a 1-pt gain</div><div class="v"><span class="from">0.13</span><span class="arr">→</span><span class="to">0.49</span></div><p>Branches concentrate evaluations: <i>r</i> rises from 1.55 to 9.80 per decision unit.</p></div>
+      </div>
+      <figure class="figure"><img src="static/images/diagnosis_revisited.png" alt="Diagnostics re-measured on SRSI" loading="lazy">
+        <figcaption><b>Re-measuring the three diagnostics on SRSI (Video-MME).</b> (a) Held-out vs. validation accuracy of tested candidates, centered within run; slopes are the transfer coefficient β. (b) Evaluations per configuration vs. verdict noise, with iso-power contours. (c) Largest frame budget held by the running champion.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== RESULTS ============================== -->
+<section class="block" id="results">
+  <div class="wrap">
+    <div class="eyebrow">Results</div>
+    <h2>Stronger harnesses that transfer better</h2>
+    <p class="lede">The setup and full numbers are in Table 1 above. Here we summarize them: how much SRSI gains on held-out data, how much it narrows the validation–test gap, and whether the gain survives when SRSI is held to BRSI's frame budget.</p>
+
+    <div class="metric-row reveal">
+      <div class="card metric"><div class="k">Mean held-out score</div><div class="v"><span class="from">54.83</span><span class="arr">→</span><span class="to">58.23</span></div><p>+6.2% relative over BRSI; +8.52 pts over the best fixed baseline per benchmark.</p></div>
+      <div class="card metric"><div class="k">Mean validation–test gap</div><div class="v"><span class="from">4.95</span><span class="arr">→</span><span class="to">3.08</span></div><p>−37.9%; the gains come mostly from better transfer, not tighter validation fit.</p></div>
+      <div class="card metric"><div class="k">Gain at a matched frame budget</div><div class="v"><span class="to">+1.66</span><span class="arr">pts</span></div><p>About half of the deployed gain (+3.40) remains when SRSI is capped at BRSI's frame budget.</p></div>
+    </div>
+
+    <div class="card viz reveal">
+      <div class="viz-head">
+        <div class="viz-title">Per-benchmark comparison<small>Mean over three seeds; error bars show sample std</small></div>
+        <div class="controls">
+          <button class="ctl on" data-bm="test">Held-out score</button>
+          <button class="ctl" data-bm="gap">Val–test gap</button>
+        </div>
+      </div>
+      <svg class="chart" id="barChart" viewBox="0 0 900 340"></svg>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="--c:#9aa3b5"></i>Best fixed baseline</span>
+        <span><i style="--c: var(--orange)"></i>VideoHarness-BRSI</span>
+        <span><i style="--c: var(--blue)"></i>VideoHarness-SRSI</span>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top: 20px">
+      <figure class="figure reveal" style="grid-column: 1 / -1">
+        <img src="static/images/cost_accuracy.png" alt="Held-out score versus frames per question" loading="lazy">
+        <figcaption><b>Is it just a bigger budget?</b> Held-out score vs. frames per question. Deployed BRSI (squares), deployed SRSI (circles), budget-matched SRSI (stars), fixed baselines (gray). On every benchmark, the budget-matched SRSI harness lies above BRSI without using more frames: +2.43 (Video-MME), +0.59 (LVB), +1.22 (OVO-Bench), +2.41 (MomentSeeker).</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== ABLATIONS ============================== -->
+<section class="block" id="ablations">
+  <div class="wrap">
+    <div class="eyebrow">Ablations</div>
+    <h2>Every component earns its place</h2>
+    <div class="abl-grid">
+      <div class="card abl reveal">
+        <h3>Instrumented warm-up</h3>
+        <p>A free-only warm-up with the same budget reaches nearly the same validation accuracy (71.85 vs. 71.70), but transfers worse: <b>67.1 vs. 69.0</b> held-out for the backbone, <b>67.3 vs. 70.1</b> for the deployed system. The removal and intensity slots supply better evidence (11.7 vs. 4.3 removal contrasts per run), not a stronger champion.</p>
+        <div class="figure"><img src="static/images/ablation_warmup.png" alt="Warm-up ablation" loading="lazy"></div>
+      </div>
+      <div class="card abl reveal">
+        <h3>Who should choose the axes?</h3>
+        <p>Automatic axes (proposer-defined): none of 9 branches improves on its backbone. Manual axes (researcher-defined): best validation (75.9) but lower held-out (68.2). <b>Fixed templates</b> of SRSI generalize best (70.1): fixing axes in advance avoids both missed directions and overfit charters.</p>
+        <div class="figure"><img src="static/images/ablation_axes.png" alt="Axis-selection ablation" loading="lazy"></div>
+      </div>
+      <div class="card abl reveal">
+        <h3>Information isolation <span class="muted" style="font-size:14px; font-family: var(--f-body); font-weight:400">· LongVideoBench held-out</span></h3>
+        <p>All three settings reach ~71% validation; the differences lie entirely in transfer. Withholding question content alone recovers ~80% of the way to SRSI.</p>
+        <div class="hbars" data-min="64" data-max="68.5">
+          <div class="hbar" style="--c: var(--orange)"><span>BRSI (Multimodal)</span><div class="track"><div class="fill" data-v="65.43"></div></div><span class="val">65.43</span></div>
+          <div class="hbar" style="--c: #6a9fd8"><span>BRSI + isolation</span><div class="track"><div class="fill" data-v="66.93"></div></div><span class="val">66.93</span></div>
+          <div class="hbar" style="--c: var(--blue)"><span>SRSI</span><div class="track"><div class="fill" data-v="67.3"></div></div><span class="val">67.30</span></div>
+        </div>
+        <p class="muted" style="font-size:13px; margin-top:8px">Val–test gap: 5.57 → 4.29 → 3.8 pts. Axis starts at 64%.</p>
+      </div>
+      <div class="card abl reveal">
+        <h3>Proposer model <span class="muted" style="font-size:14px; font-family: var(--f-body); font-weight:400">· Video-MME held-out</span></h3>
+        <p>SRSI stays effective with weaker proposers — all beat every fixed baseline (best 63.4), and with Sonnet 5 it still surpasses BRSI driven by Opus 5 (orange line, 66.5). Accuracy tracks proposer capability.</p>
+        <div class="hbars" data-min="60" data-max="71" data-ref="66.5">
+          <div class="hbar" style="--c: var(--blue)"><span>Claude Opus 5</span><div class="track"><div class="fill" data-v="70.1"></div><div class="ref"></div></div><span class="val">70.1</span></div>
+          <div class="hbar" style="--c: #6a9fd8"><span>Claude Sonnet 5</span><div class="track"><div class="fill" data-v="67.7"></div><div class="ref"></div></div><span class="val">67.7</span></div>
+          <div class="hbar" style="--c: #a9c6ea"><span>Claude Opus 4.8</span><div class="track"><div class="fill" data-v="65.8"></div><div class="ref"></div></div><span class="val">65.8</span></div>
+        </div>
+        <p class="muted" style="font-size:13px; margin-top:8px">Axis starts at 60%.</p>
+      </div>
+    </div>
+
+    <figure class="figure reveal" style="margin-top: 20px">
+      <img src="static/images/composition.png" alt="Factorial composition main effects" loading="lazy">
+      <figcaption><b>Factorial composition.</b> Effect of each composed modification from its single cell vs. H<sub>0</sub> (one verdict, gray) and as the factorial main effect (blue); bars are 95% CIs. Main effects have smaller standard errors (0.83 vs. 1.06) and correct single-cell readings; all interactions stay within ±1.2 pts.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================== STRATEGIES ============================== -->
+<section class="block" id="strategies">
+  <div class="wrap">
+    <div class="eyebrow">Discovered strategies</div>
+    <h2>What the proposer actually built</h2>
+    <p class="lede">A gallery of harnesses discovered by SRSI on Video-MME: each run's warm-up champion (the backbone H<sub>0</sub>), the best candidate of every raced branch axis, and the deployed final harness. Names, component tags and hypotheses are written by the proposer itself — without ever seeing a video or a question.</p>
+    <div class="filters" id="stratFilters">
+      <button class="ctl" data-f="seed" data-v="all">All runs</button>
+      <button class="ctl on" data-f="seed" data-v="1">Seed 1</button>
+      <button class="ctl" data-f="seed" data-v="2">Seed 2</button>
+      <button class="ctl" data-f="seed" data-v="3">Seed 3</button>
+      <span class="sep"></span>
+      <button class="ctl on" data-f="role" data-v="all">All stages</button>
+      <button class="ctl" data-f="role" data-v="Warm-up champion" style="--c: var(--purple)"><span class="dot"></span>Warm-up</button>
+      <button class="ctl" data-f="role" data-v="Branch champion" style="--c: var(--gold)"><span class="dot"></span>Branch</button>
+      <button class="ctl" data-f="role" data-v="Final harness" style="--c: var(--green)"><span class="dot"></span>Final</button>
+    </div>
+    <div class="strat-grid" id="stratGrid"></div>
+  </div>
+</section>
+
+<!-- ============================== QUALITATIVE EXAMPLES ============================== -->
+<section class="block" id="examples">
+  <div class="wrap">
+    <div class="eyebrow">Qualitative examples</div>
+    <h2>Evolved harnesses at work</h2>
+    <p class="lede">Two held-out Video-MME questions where both seed harnesses answer wrong and the deployed SRSI harness of seed 1, <code>crossorder_triad</code> (71.1% test vs. 63.4% for <code>clip_topk</code>), answers right. Both videos are long pet compilations, and the answer sits in a few seconds of one clip.</p>
+
+    <div class="card ex-harness reveal">
+      <div class="lin"><span class="k">Lineage</span><code>clip_topk</code><span class="arr">→</span><code>optquery_cells</code><span class="arr">→</span><code>concord_triad</code><span class="arr">→</span><code>crossorder_triad</code></div>
+      <ol>
+        <li><b>Three query views.</b> Each option text on its own (O), question plus options as one string (J), and each option padded with the question’s content words (S). Each view is retrieved with CLIP-B and CLIP-L and fused by reciprocal rank.</li>
+        <li><b>50 frames per reader.</b> 35 time-equal coverage cells each keep their best-ranked frame, and the remaining 15 go to the top frames of each option.</li>
+        <li><b>Permuted readers, content vote.</b> O reads the options in their given order, J in reverse, S rotated by two. Each letter is mapped back to the option it names. If O and J agree, S is skipped.</li>
+      </ol>
+      <p class="hyp"><span class="q">Proposer’s hypothesis</span>“The model’s output is not [flat across letters]: <code>uniform</code> answers B 142 times … That excess sits on the LETTER, not on the content, and every member of the parent reads the identical option list in the identical order — so a choice that was driven by an option’s POSITION is made the same way by all three, survives the plurality untouched.”</p>
+    </div>
+
+    <article class="card ex reveal">
+      <div class="ex-head">
+        <div class="ex-tags"><span>Video-MME · held-out test</span><span>Action recognition</span><span>8-min pet compilation</span><span class="mono">576-1</span></div>
+        <h3>What does the squirrel do in this video?</h3>
+        <ol class="ex-opts"><li class=""><b>A</b>Eating food.</li><li class="gt"><b>B</b>Wrestling with a doll.</li><li class=""><b>C</b>Climbing on a tree.</li><li class=""><b>D</b>Lying down and sleeping.</li></ol>
+      </div>
+      <div class="ex-video">
+        <div class="ex-strip"><img src="static/images/examples/squirrel_strip0.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip1.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip2.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip3.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip4.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip5.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip6.jpg" alt="" loading="lazy"><img src="static/images/examples/squirrel_strip7.jpg" alt="" loading="lazy"></div>
+        <div class="ex-timeline" aria-label="Video timeline">
+          <div class="span" style="left:2.50%; width:1.67%"></div>
+          <div class="ticks"><i style="left:0.00%"></i><i style="left:6.67%"></i><i style="left:13.33%"></i><i style="left:20.00%"></i><i style="left:26.67%"></i><i style="left:33.33%"></i><i style="left:40.00%"></i><i style="left:46.67%"></i><i style="left:53.33%"></i><i style="left:60.00%"></i><i style="left:66.67%"></i><i style="left:73.33%"></i><i style="left:80.00%"></i><i style="left:86.67%"></i><i style="left:93.33%"></i><i style="left:100.00%"></i></div>
+        </div>
+        <div class="ex-tl-legend"><span>0 s</span><span><i class="sw span-sw"></i>the ≈8 s squirrel clip · <i class="sw tick-sw"></i>the 16 frames <code>uniform</code> reads</span><span>480 s</span></div>
+      </div>
+      <div class="ex-body">
+        <figure class="ex-key">
+          <div class="imgs"><img src="static/images/examples/squirrel_key1.jpg" alt="A chipmunk grabbing a plush toy" loading="lazy"><img src="static/images/examples/squirrel_key2.jpg" alt="The chipmunk flipping the plush toy over" loading="lazy"></div>
+          <figcaption>The answer lives in one ≈8 s clip (≈12–20 s) of a 480 s compilation. <code>uniform</code>’s frames land at 0 s and 32 s, on either side of it.</figcaption>
+        </figure>
+        <div class="ex-runs">
+          <div class="ex-run wrong"><div class="h"><code>uniform</code><span>16 frames · 1 read</span></div><div class="ans"><b>C</b> Climbing on a tree.<em>✗</em></div></div><div class="ex-run wrong"><div class="h"><code>clip_topk</code><span>seed harness · 16 retrieved frames · 1 read</span></div><div class="ans"><b>C</b> Climbing on a tree.<em>✗</em></div></div>
+          <div class="ex-run right"><div class="h"><code>crossorder_triad</code><span>SRSI final · 150 frames · 3 reads · 22 retrievals</span></div>
+            <div class="voters"><div class="voter bad"><div class="vh"><b>O</b>given order</div><div class="slots" title="option shown in each slot"><span class=""><b>A</b>A</span><span class=" gt"><b>B</b>B</span><span class="pk"><b>C</b>C</span><span class=""><b>D</b>D</span></div><div class="said">says “C” → <b>C</b> Climbing on a tree.</div></div><div class="voter ok"><div class="vh"><b>J</b>reversed</div><div class="slots" title="option shown in each slot"><span class=""><b>A</b>D</span><span class=""><b>B</b>C</span><span class="pk gt"><b>C</b>B</span><span class=""><b>D</b>A</span></div><div class="said">says “C” → <b>B</b> Wrestling with a doll.</div></div><div class="voter ok"><div class="vh"><b>S</b>rotated by two</div><div class="slots" title="option shown in each slot"><span class=""><b>A</b>C</span><span class=""><b>B</b>D</span><span class=""><b>C</b>A</span><span class="pk gt"><b>D</b>B</span></div><div class="said">says “D” → <b>B</b> Wrestling with a doll.</div></div></div>
+            <div class="ans"><b>B</b> Wrestling with a doll.<em>✓</em><small>plurality over options, not letters</small></div>
+          </div>
+        </div>
+      </div>
+      <p class="ex-note">Member O, which reads the options in their given order, repeats the seeds’ “climbing on a tree”. J and S read their own frame sets with the options permuted and both name “wrestling with a doll”. J’s raw letter is <b>C</b>, the same letter O gave, but in J’s order slot C holds option B. A vote over letters would treat J as agreeing with O; SRSI votes over option contents, so the permuted readers outvote O.</p>
+    </article>
+    <article class="card ex reveal">
+      <div class="ex-head">
+        <div class="ex-tags"><span>Video-MME · held-out test</span><span>Attribute perception</span><span>9-min pet compilation</span><span class="mono">573-1</span></div>
+        <h3>What color does the fish turn when fed a sea urchin by a man?</h3>
+        <ol class="ex-opts"><li class=""><b>A</b>Yellow-black.</li><li class=""><b>B</b>Black-white.</li><li class=""><b>C</b>Green-yellow.</li><li class="gt"><b>D</b>Blue-yellow.</li></ol>
+      </div>
+      <div class="ex-video">
+        <div class="ex-strip"><img src="static/images/examples/fish_strip0.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip1.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip2.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip3.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip4.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip5.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip6.jpg" alt="" loading="lazy"><img src="static/images/examples/fish_strip7.jpg" alt="" loading="lazy"></div>
+        <div class="ex-timeline" aria-label="Video timeline">
+          <div class="span" style="left:24.52%; width:2.12%"></div>
+          <div class="ticks"><i style="left:0.00%"></i><i style="left:6.67%"></i><i style="left:13.33%"></i><i style="left:20.00%"></i><i style="left:26.67%"></i><i style="left:33.33%"></i><i style="left:40.00%"></i><i style="left:46.67%"></i><i style="left:53.33%"></i><i style="left:60.00%"></i><i style="left:66.67%"></i><i style="left:73.33%"></i><i style="left:80.00%"></i><i style="left:86.67%"></i><i style="left:93.33%"></i><i style="left:100.00%"></i></div>
+        </div>
+        <div class="ex-tl-legend"><span>0 s</span><span><i class="sw span-sw"></i>the ≈11 s fish clip · <i class="sw tick-sw"></i>the 16 frames <code>uniform</code> reads</span><span>542 s</span></div>
+      </div>
+      <div class="ex-body">
+        <figure class="ex-key">
+          <div class="imgs"><img src="static/images/examples/fish_key1.jpg" alt="A diver offering a sea urchin to a dark fish with a yellow band" loading="lazy"><img src="static/images/examples/fish_key2.jpg" alt="The fish, now blue with yellow fins, taking the urchin" loading="lazy"></div>
+          <figcaption>The fish clip runs from ≈133 s to ≈144 s. The color change happens in a few seconds of it: dark with a yellow band as it approaches, blue with yellow fins as it takes the urchin.</figcaption>
+        </figure>
+        <div class="ex-runs">
+          <div class="ex-run wrong"><div class="h"><code>uniform</code><span>16 frames · 1 read</span></div><div class="ans"><b>C</b> Green-yellow.<em>✗</em></div></div><div class="ex-run wrong"><div class="h"><code>clip_topk</code><span>seed harness · 16 retrieved frames · 1 read</span></div><div class="ans"><b>A</b> Yellow-black.<em>✗</em></div></div>
+          <div class="ex-run right"><div class="h"><code>crossorder_triad</code><span>SRSI final · 150 frames · 3 reads · 22 retrievals</span></div>
+            <div class="voters"><div class="voter bad"><div class="vh"><b>O</b>given order</div><div class="slots" title="option shown in each slot"><span class="pk"><b>A</b>A</span><span class=""><b>B</b>B</span><span class=""><b>C</b>C</span><span class=" gt"><b>D</b>D</span></div><div class="said">says “A” → <b>A</b> Yellow-black.</div></div><div class="voter ok"><div class="vh"><b>J</b>reversed</div><div class="slots" title="option shown in each slot"><span class="pk gt"><b>A</b>D</span><span class=""><b>B</b>C</span><span class=""><b>C</b>B</span><span class=""><b>D</b>A</span></div><div class="said">says “A” → <b>D</b> Blue-yellow.</div></div><div class="voter ok"><div class="vh"><b>S</b>rotated by two</div><div class="slots" title="option shown in each slot"><span class=""><b>A</b>C</span><span class="pk gt"><b>B</b>D</span><span class=""><b>C</b>A</span><span class=""><b>D</b>B</span></div><div class="said">says “B” → <b>D</b> Blue-yellow.</div></div></div>
+            <div class="ans"><b>D</b> Blue-yellow.<em>✓</em><small>plurality over options, not letters</small></div>
+          </div>
+        </div>
+      </div>
+      <p class="ex-note">The two seeds disagree with each other and are both wrong. O picks “yellow-black”, the fish’s look before it is fed. J again answers the letter <b>A</b>, the same letter as O, but its slot A is option D (“blue-yellow”). S agrees with J on content from a third slot position, so the answer flips to the right one.</p>
+    </article>
+    <p class="muted" style="font-size:12.5px; margin-top:12px">Predictions, read counts and frame counts come from the evaluation logs. Key frames and clip spans from the source video are shown for reference.</p>
+  </div>
+</section>
+
+<!-- ============================== BIBTEX ============================== -->
+<section class="block" id="bibtex">
+  <div class="wrap">
+    <div class="eyebrow">Citation</div>
+    <h2>BibTeX</h2>
+    <div class="bib">
+      <button class="copy" id="copyBib">Copy</button>
+<pre id="bibText">@article{lin2026videoharnesssrsi,
+  title   = {VideoHarness-SRSI: Structured Recursive Self-Improvement
+             for Video Understanding Harness},
+  author  = {Lin, Zihao and Dong, Haoyu and Xu, Haobo and Chang, Chi-Chih and
+             Ning, Xuying and Xia, Yinglong and Yang, Shuang and Zhao, Zhuokai and
+             Song, Xinying and Liu, Dongfang and Huang, Lifu and Song, Yang and
+             Wang, Qifan},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</pre>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    VideoHarness-SRSI · Project page. Figures and numbers come from the experiments in the paper.
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="static/data/data.js?v=20261014"></script>
+<script src="static/js/main.js?v=20261014"></script>
+</body>
+</html>
