@@ -1,6 +1,6 @@
-# VideoHarness-SRSI — Project Page
+# VHarness-SRSI — Project Page
 
-Project page for **VideoHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness**.
+Project page for **VHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness**.
 
 A static site with no build step: `index.html` + `static/`. It works on GitHub Pages and also opens straight from disk (`file://`).
 

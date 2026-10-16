@@ -1,4 +1,4 @@
-/* VideoHarness-SRSI project page — interactive figures.
+/* VHarness-SRSI project page — interactive figures.
    Data: window.SRSI_DATA (static/data/data.js). */
 (function () {
   "use strict";

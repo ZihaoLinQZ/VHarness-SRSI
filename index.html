@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VideoHarness-SRSI</title>
-  <meta name="description" content="VideoHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness. An evidence-governed framework for evolving agentic video-understanding harnesses that generalize.">
-  <meta property="og:title" content="VideoHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness">
+  <title>VHarness-SRSI</title>
+  <meta name="description" content="VHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness. An evidence-governed framework for evolving agentic video-understanding harnesses that generalize.">
+  <meta property="og:title" content="VHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness">
   <meta property="og:description" content="Every search decision should rest on evidence that is transferable, sufficient, and gathered before the search commits.">
   <meta property="og:image" content="static/images/srsi_overview.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -20,7 +20,7 @@
 <!-- ============================== NAV ============================== -->
 <nav class="nav" id="nav">
   <div class="wrap">
-    <a class="brand" href="#top">VideoHarness-<span>SRSI</span></a>
+    <a class="brand" href="#top">VHarness-<span>SRSI</span></a>
     <ul>
       <li><a href="#overview">Overview</a></li>
       <li><a href="#evolution">Evolution</a></li>
@@ -42,7 +42,7 @@
   <canvas id="heroCanvas" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="venue"><i></i> Recursive self-improvement · Agentic video understanding</div>
-    <h1><span class="accent">VideoHarness-SRSI</span></h1>
+    <h1><span class="accent">VHarness-SRSI</span></h1>
     <p class="subtitle">Structured Recursive Self-Improvement for Video Understanding Harness</p>
 
     <div class="authors">
@@ -101,8 +101,8 @@
       <div>
         <p class="big">An LLM system is shaped not only by its model, but by its <b>harness</b>: the executable code that decides what the model sees, which tools run, and how intermediate outputs become an answer.</p>
         <p>Recursive self-improvement lets a coding agent rewrite that harness from feedback. We study it in <b>agentic video understanding</b>, where harnesses must coordinate frame selection, retrieval, perception tools, reflection, memory and multi-agent roles — and where rich videos invite a proposer to specialize to what it sees.</p>
-        <p>We first build <span class="brsi">VideoHarness-BRSI</span>, a baseline recursive self-improvement loop around a frozen VLM. It rivals hand-engineered systems, but across 4,000+ evolved candidates its validation wins often fail to transfer. All of its failures trace to one root: <b>the same imperfect validation verdict decides both which harness is kept and where the proposer searches next.</b></p>
-        <p>We therefore propose <span class="srsi">VideoHarness-SRSI</span>, an evidence-governed framework in which every search decision rests on evidence that is <b>transferable</b>, <b>sufficient</b>, and <b>gathered before search commits</b>.</p>
+        <p>We first build <span class="brsi">VHarness-BRSI</span>, a baseline recursive self-improvement loop around a frozen VLM. It rivals hand-engineered systems, but across 4,000+ evolved candidates its validation wins often fail to transfer. All of its failures trace to one root: <b>the same imperfect validation verdict decides both which harness is kept and where the proposer searches next.</b></p>
+        <p>We therefore propose <span class="srsi">VHarness-SRSI</span>, an evidence-governed framework in which every search decision rests on evidence that is <b>transferable</b>, <b>sufficient</b>, and <b>gathered before search commits</b>.</p>
       </div>
       <ul class="pill-list">
         <li data-n="01" style="--c: var(--orange)"><b>Diagnosis</b><span>Recursive evolution discovers competitive harnesses, yet suffers three interconnected failure modes: validation overfitting, search-budget dilution, and the early-experience trap.</span></li>
@@ -112,8 +112,8 @@
     </div>
 
     <figure class="figure reveal" style="margin-top: 40px">
-      <img src="static/images/brsi_overview.png" alt="Overview of VideoHarness-BRSI" loading="lazy">
-      <figcaption><b>VideoHarness-BRSI.</b> (a) A coding proposer inspects validation videos and questions, revises the harness around a frozen VLM, and archives scores and traces that later iterations reuse. (b) In a retrieval-only run on Video-MME, the evolved harness matches the strongest hand-designed AKS variant with 38.7% fewer frames. The same validation verdict both selects the harness and steers the next search — mixing the true gain with validation fit, noise, and champion inflation.</figcaption>
+      <img src="static/images/brsi_overview.png" alt="Overview of VHarness-BRSI" loading="lazy">
+      <figcaption><b>VHarness-BRSI.</b> (a) A coding proposer inspects validation videos and questions, revises the harness around a frozen VLM, and archives scores and traces that later iterations reuse. (b) In a retrieval-only run on Video-MME, the evolved harness matches the strongest hand-designed AKS variant with 38.7% fewer frames. The same validation verdict both selects the harness and steers the next search — mixing the true gain with validation fit, noise, and champion inflation.</figcaption>
     </figure>
   </div>
 </section>
@@ -305,12 +305,12 @@
 <section class="block" id="method">
   <div class="wrap">
     <div class="eyebrow">Method</div>
-    <h2>VideoHarness-SRSI: evidence before search commits</h2>
+    <h2>VHarness-SRSI: evidence before search commits</h2>
     <p class="lede">SRSI keeps the propose–evaluate–accumulate loop of BRSI and changes only the <em>evidence</em> behind its decisions. Each component implements one takeaway.</p>
 
     <figure class="figure reveal">
-      <img src="static/images/srsi_overview.png" alt="Overview of VideoHarness-SRSI" loading="lazy">
-      <figcaption><b>Overview of VideoHarness-SRSI.</b> Top: under information isolation the harness runs on validation videos and questions, but the proposer receives only scores and content-free traces. Bottom: Stage I adds a removal and an intensity change to free proposals each round and selects a seed pool and backbone H<sub>0</sub>; Stage II evolves each mechanism axis in its own branch from H<sub>0</sub> under a probe–race budget; Stage III distills kept axes into fixed modifications, evaluates all combinations, and jointly refines them into H<sup>★</sup>.</figcaption>
+      <img src="static/images/srsi_overview.png" alt="Overview of VHarness-SRSI" loading="lazy">
+      <figcaption><b>Overview of VHarness-SRSI.</b> Top: under information isolation the harness runs on validation videos and questions, but the proposer receives only scores and content-free traces. Bottom: Stage I adds a removal and an intensity change to free proposals each round and selects a seed pool and backbone H<sub>0</sub>; Stage II evolves each mechanism axis in its own branch from H<sub>0</sub> under a probe–race budget; Stage III distills kept axes into fixed modifications, evaluates all combinations, and jointly refines them into H<sup>★</sup>.</figcaption>
     </figure>
 
     <div class="stepper reveal">
@@ -400,8 +400,8 @@
             <tr><td class="m">debate_pair</td><td>63.78</td><td class="test">61.42</td><td>57.40</td><td class="test">55.56</td><td>44.58</td><td class="test">45.86</td><td>16.42</td><td class="test">17.92</td></tr>
             <tr><td class="m">memo_multiturn</td><td>63.11</td><td class="test">58.98</td><td>58.52</td><td class="test">59.93</td><td>55.42</td><td class="test">54.65</td><td>15.91</td><td class="test">16.00</td></tr>
             <tr class="group"><td colspan="9">Evolved harnesses</td></tr>
-            <tr><td>VideoHarness-BRSI</td><td>72.2<span class="pm">±1.8</span></td><td class="test">66.5<span class="pm">±1.2</span></td><td>70.2<span class="pm">±0.3</span></td><td class="test">66.6<span class="pm">±1.0</span></td><td>72.9<span class="pm">±2.1</span></td><td class="test">67.2<span class="pm">±1.7</span></td><td>23.8<span class="pm">±0.7</span></td><td class="test">19.0<span class="pm">±1.8</span></td></tr>
-            <tr class="ours"><td>VideoHarness-SRSI</td><td class="best">75.0<span class="pm">±1.9</span></td><td class="test best">70.1<span class="pm">±1.0</span></td><td class="best">71.1<span class="pm">±2.0</span></td><td class="test best">67.3<span class="pm">±1.0</span></td><td class="best">73.8<span class="pm">±2.4</span></td><td class="test best">72.5<span class="pm">±3.1</span></td><td class="best">25.3<span class="pm">±0.3</span></td><td class="test best">23.0<span class="pm">±0.7</span></td></tr>
+            <tr><td>VHarness-BRSI</td><td>72.2<span class="pm">±1.8</span></td><td class="test">66.5<span class="pm">±1.2</span></td><td>70.2<span class="pm">±0.3</span></td><td class="test">66.6<span class="pm">±1.0</span></td><td>72.9<span class="pm">±2.1</span></td><td class="test">67.2<span class="pm">±1.7</span></td><td>23.8<span class="pm">±0.7</span></td><td class="test">19.0<span class="pm">±1.8</span></td></tr>
+            <tr class="ours"><td>VHarness-SRSI</td><td class="best">75.0<span class="pm">±1.9</span></td><td class="test best">70.1<span class="pm">±1.0</span></td><td class="best">71.1<span class="pm">±2.0</span></td><td class="test best">67.3<span class="pm">±1.0</span></td><td class="best">73.8<span class="pm">±2.4</span></td><td class="test best">72.5<span class="pm">±3.1</span></td><td class="best">25.3<span class="pm">±0.3</span></td><td class="test best">23.0<span class="pm">±0.7</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -445,8 +445,8 @@
       <svg class="chart" id="barChart" viewBox="0 0 900 340"></svg>
       <div class="legend" style="margin-top:6px">
         <span><i style="--c:#9aa3b5"></i>Best fixed baseline</span>
-        <span><i style="--c: var(--orange)"></i>VideoHarness-BRSI</span>
-        <span><i style="--c: var(--blue)"></i>VideoHarness-SRSI</span>
+        <span><i style="--c: var(--orange)"></i>VHarness-BRSI</span>
+        <span><i style="--c: var(--blue)"></i>VHarness-SRSI</span>
       </div>
     </div>
 
@@ -611,8 +611,8 @@
     <h2>BibTeX</h2>
     <div class="bib">
       <button class="copy" id="copyBib">Copy</button>
-<pre id="bibText">@misc{lin2026videoharnesssrsistructuredrecursiveselfimprovement,
-      title={VideoHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness}, 
+<pre id="bibText">@misc{lin2026vharnesssrsistructuredrecursiveselfimprovement,
+      title={VHarness-SRSI: Structured Recursive Self-Improvement for Video Understanding Harness}, 
       author={Zihao Lin and Haoyu Dong and Haobo Xu and Chi-Chih Chang and Xuying Ning and Yinglong Xia and Shuang Yang and Zhuokai Zhao and Xinying Song and Dongfang Liu and Lifu Huang and Yang Song and Qifan Wang},
       year={2026},
       eprint={2610.19424},
@@ -628,7 +628,7 @@
 
 <footer>
   <div class="wrap">
-    VideoHarness-SRSI · Project page. Figures and numbers come from the experiments in the paper.
+    VHarness-SRSI · Project page. Figures and numbers come from the experiments in the paper.
   </div>
 </footer>
 
